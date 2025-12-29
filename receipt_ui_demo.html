@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fynix Bookkeeping - Receipt Processed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .success-banner {
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .success-banner svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .receipt-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .vendor-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .confidence {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .receipt-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .line-items {
+            margin-top: 20px;
+        }
+
+        .line-items h3 {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .line-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-description {
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .item-price {
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .job-suggestions {
+            margin-top: 30px;
+        }
+
+        .job-suggestions h2 {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .job-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .job-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .job-card.recommended {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .job-name {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 15px;
+        }
+
+        .job-number {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .confidence-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .confidence-badge.medium {
+            background: #f59e0b;
+        }
+
+        .job-reasons {
+            margin-top: 10px;
+        }
+
+        .reason {
+            display: flex;
+            align-items: start;
+            gap: 8px;
+            color: #4b5563;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .reason::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f3f4f6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            transition: width 0.3s;
+        }
+
+        .recommended-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Receipt Processing Complete</h1>
+            <p>Receipt ID: receipt_20251228233418589638</p>
+        </div>
+
+        <div class="success-banner">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span><strong>Success!</strong> Receipt extracted with 95% confidence</span>
+        </div>
+
+        <div class="content">
+            <div class="receipt-card">
+                <div class="receipt-header">
+                    <div>
+                        <div class="vendor-name">THE HOME DEPOT</div>
+                        <div style="color: #6b7280; font-size: 13px; margin-top: 4px;">Receipt #0160 00051 07354</div>
+                    </div>
+                    <div class="confidence">95% Confidence</div>
+                </div>
+
+                <div class="receipt-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Date</div>
+                        <div class="detail-value">May 12, 2023</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Total</div>
+                        <div class="detail-value">$645.20</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Tax</div>
+                        <div class="detail-value">$42.21</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Payment</div>
+                        <div class="detail-value">Debit Card</div>
+                    </div>
+                </div>
+
+                <div class="line-items">
+                    <h3>Line Items (3)</h3>
+                    <div class="line-item">
+                        <div class="item-description">HALO KP SN &lt;A&gt;</div>
+                        <div class="item-price">$224.00</div>
+                    </div>
+                    <div class="line-item">
+                        <div class="item-description">KWIKSET HALO SN KEYPAD DBLT</div>
+                        <div class="item-price">$99.99</div>
+                    </div>
+                    <div class="line-item">
+                        <div class="item-description">GOOGLE NEST HUB CHARCOAL</div>
+                        <div class="item-price">$279.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-suggestions">
+                <h2>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Job Suggestions
+                </h2>
+
+                <div class="job-card recommended">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-name">
+                                Johnson Residence - Smart Home Install
+                                <span class="recommended-badge">RECOMMENDED</span>
+                            </div>
+                            <div class="job-number">HVAC-2023-042</div>
+                        </div>
+                        <div class="confidence-badge">85%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 85%"></div>
+                    </div>
+                    <div class="job-reasons">
+                        <div class="reason">Date falls within job timeline (May 10-15)</div>
+                        <div class="reason">Materials match job scope: NEST products</div>
+                        <div class="reason">Amount reasonable for job budget ($800)</div>
+                        <div class="reason">Smart home installation keywords detected</div>
+                    </div>
+                </div>
+
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-name">Martinez Property - AC Replacement</div>
+                            <div class="job-number">HVAC-2023-039</div>
+                        </div>
+                        <div class="confidence-badge medium">45%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%; background: #f59e0b;"></div>
+                    </div>
+                    <div class="job-reasons">
+                        <div class="reason">Date close to job dates (May 1-8)</div>
+                        <div class="reason">Amount reasonable for job budget ($2,500)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary">Assign to Johnson - Smart Home Install</button>
+                <button class="btn btn-secondary">Select Different Job</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

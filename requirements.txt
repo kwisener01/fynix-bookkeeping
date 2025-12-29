@@ -1,0 +1,44 @@
+# Fynix Bookkeeping - Python Dependencies
+
+# API Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6  # For file uploads
+
+# AI APIs
+anthropic>=0.8.0
+openai>=1.0.0
+
+# Data Processing
+pydantic>=2.5.0
+python-dateutil>=2.8.2
+
+# HTTP Clients
+httpx>=0.25.0
+aiofiles>=23.2.0
+
+# Image Processing
+pillow>=10.1.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# Database
+psycopg2-binary>=2.9.9
+sqlalchemy>=2.0.0
+asyncpg>=0.29.0
+
+# Supabase Client
+supabase>=2.0.0
+
+# Authentication & Security
+pyjwt>=2.8.0
+passlib>=1.7.4
+bcrypt>=4.1.0
+python-jose[cryptography]>=3.3.0
+
+# Email
+sendgrid>=6.11.0
+
+# Payments
+stripe>=7.0.0
