@@ -39,7 +39,7 @@ const nextConfig = {
 
   // Experimental features
   experimental: {
-    optimizeCss: true,
+    // optimizeCss: true,  // Disabled - requires critters package
   },
 };
 
