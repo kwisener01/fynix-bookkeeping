@@ -331,22 +331,24 @@ async def capture_receipt(
         # Read file
         contents = await file.read()
 
-        # Determine media type from content-type header or file extension
-        media_type = file.content_type
+        # Detect actual image format from magic bytes (file signature)
+        def detect_image_format(data: bytes) -> str:
+            """Detect image format from file signature (magic bytes)"""
+            if data.startswith(b'\xff\xd8\xff'):
+                return 'image/jpeg'
+            elif data.startswith(b'\x89PNG\r\n\x1a\n'):
+                return 'image/png'
+            elif data.startswith(b'GIF87a') or data.startswith(b'GIF89a'):
+                return 'image/gif'
+            elif data.startswith(b'RIFF') and data[8:12] == b'WEBP':
+                return 'image/webp'
+            else:
+                # Default to JPEG if unknown
+                logger.warning(f"Unknown image format, defaulting to JPEG. First bytes: {data[:10]}")
+                return 'image/jpeg'
 
-        # If content_type is not set or is generic, try to detect from filename
-        if not media_type or media_type == 'application/octet-stream':
-            media_type_map = {
-                'jpg': 'image/jpeg',
-                'jpeg': 'image/jpeg',
-                'png': 'image/png',
-                'gif': 'image/gif',
-                'webp': 'image/webp'
-            }
-            file_ext = file.filename.split('.')[-1].lower() if file.filename else 'jpg'
-            media_type = media_type_map.get(file_ext, 'image/jpeg')
-
-        logger.info(f"Processing image with media type: {media_type}")
+        media_type = detect_image_format(contents)
+        logger.info(f"Detected image format: {media_type} (filename: {file.filename})")
 
         # Extract data using Claude Vision
         ocr = ReceiptOCR()
