@@ -43,14 +43,10 @@ app = FastAPI(
 )
 
 # CORS for web integrations
+# Note: For production, use environment variable to set specific allowed origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://frontend-gcdtkl9yp-kevin-wiseners-projects.vercel.app",
-        "https://frontend-*.vercel.app",  # All Vercel preview deployments
-        "https://*.vercel.app",  # All Vercel deployments
-        "http://localhost:3000",  # Local development
-    ],
+    allow_origins=["*"],  # Allow all origins for demo (tighten in production)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
