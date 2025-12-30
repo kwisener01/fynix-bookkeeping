@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';  // Increment to force cache clear
 const STATIC_CACHE = `fynix-static-${CACHE_VERSION}`;
 const API_CACHE = `fynix-api-${CACHE_VERSION}`;
 const OFFLINE_RECEIPTS_DB = 'fynix-offline-receipts';

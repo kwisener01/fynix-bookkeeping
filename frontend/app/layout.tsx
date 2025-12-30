@@ -9,6 +9,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   useEffect(() => {
+    // Clear old cached data on first load
+    const clearOldData = () => {
+      try {
+        // Clear old localStorage data
+        const keysToKeep = ['demoUser']; // Keep current demo session
+        const keysToRemove: string[] = [];
+
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && !keysToKeep.includes(key)) {
+            keysToRemove.push(key);
+          }
+        }
+
+        keysToRemove.forEach(key => {
+          console.log('Clearing old data:', key);
+          localStorage.removeItem(key);
+        });
+
+        console.log('Old data cleared');
+      } catch (error) {
+        console.error('Error clearing old data:', error);
+      }
+    };
+
+    clearOldData();
+
     // Register service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
