@@ -331,17 +331,22 @@ async def capture_receipt(
         # Read file
         contents = await file.read()
 
-        # Determine media type
-        media_type_map = {
-            'jpg': 'image/jpeg',
-            'jpeg': 'image/jpeg',
-            'png': 'image/png',
-            'gif': 'image/gif',
-            'webp': 'image/webp'
-        }
+        # Determine media type from content-type header or file extension
+        media_type = file.content_type
 
-        file_ext = file.filename.split('.')[-1].lower()
-        media_type = media_type_map.get(file_ext, 'image/jpeg')
+        # If content_type is not set or is generic, try to detect from filename
+        if not media_type or media_type == 'application/octet-stream':
+            media_type_map = {
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'png': 'image/png',
+                'gif': 'image/gif',
+                'webp': 'image/webp'
+            }
+            file_ext = file.filename.split('.')[-1].lower() if file.filename else 'jpg'
+            media_type = media_type_map.get(file_ext, 'image/jpeg')
+
+        logger.info(f"Processing image with media type: {media_type}")
 
         # Extract data using Claude Vision
         ocr = ReceiptOCR()
