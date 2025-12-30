@@ -36,9 +36,16 @@ export default function DemoCapturePage() {
   };
 
   const handleSuccess = (response: ReceiptUploadResponse) => {
-    console.log('Receipt uploaded successfully:', response);
+    console.log('=== RECEIPT UPLOAD SUCCESS ===');
+    console.log('Full API Response:', response);
+    console.log('Vendor:', response.extracted?.vendor);
+    console.log('Total:', response.extracted?.total);
+    console.log('Receipt ID:', response.receipt_id);
+
     // Store result in localStorage for result page
     localStorage.setItem('lastReceiptResult', JSON.stringify(response));
+    console.log('Stored in localStorage');
+
     router.push(`/demo/result?id=${response.receipt_id}`);
   };
 

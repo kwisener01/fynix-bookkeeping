@@ -49,14 +49,24 @@ export default function DemoResultPage() {
 
     // Load actual result from localStorage
     try {
+      console.log('=== LOADING RESULT PAGE ===');
+      console.log('Receipt ID from URL:', receiptId);
+
       const storedResult = localStorage.getItem('lastReceiptResult');
+      console.log('Raw localStorage data:', storedResult);
+
       if (storedResult) {
         const apiResponse = JSON.parse(storedResult);
+        console.log('Parsed API Response:', apiResponse);
+        console.log('API Response Receipt ID:', apiResponse.receipt_id);
+        console.log('API Response Vendor:', apiResponse.extracted?.vendor);
 
         // Only use if receipt ID matches (to prevent showing old cached data)
         if (apiResponse.receipt_id === receiptId) {
+          console.log('✓ Receipt ID matches - displaying data');
+
           // Transform API response to match ResultData interface
-          setResult({
+          const resultData = {
             receipt_id: apiResponse.receipt_id,
             extracted: {
               vendor: apiResponse.extracted.vendor,
@@ -68,14 +78,20 @@ export default function DemoResultPage() {
               payment_method: apiResponse.extracted.payment_method || 'Unknown',
             },
             job_suggestions: apiResponse.job_suggestions || [],
-          });
+          };
+
+          console.log('Final result data:', resultData);
+          setResult(resultData);
 
           // Clear after loading to prevent stale data
           localStorage.removeItem('lastReceiptResult');
         } else {
-          console.warn('Receipt ID mismatch - clearing stale data');
+          console.warn('✗ Receipt ID mismatch - clearing stale data');
+          console.warn(`  Expected: ${receiptId}, Got: ${apiResponse.receipt_id}`);
           localStorage.removeItem('lastReceiptResult');
         }
+      } else {
+        console.warn('No data found in localStorage');
       }
     } catch (error) {
       console.error('Error loading receipt result:', error);
