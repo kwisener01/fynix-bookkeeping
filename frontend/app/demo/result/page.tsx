@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Camera, CheckCircle, DollarSign, Calendar, Package, TrendingUp, ArrowLeft } from 'lucide-react';
 import { getDemoUser } from '@/lib/demo-session';
 
-// Mock result data structure (in production, would fetch from API/state)
+// Result data structure from API
 interface ResultData {
   receipt_id: string;
   extracted: {
@@ -14,7 +14,13 @@ interface ResultData {
     total: number;
     tax: number;
     confidence: number;
-    line_items: Array<{ description: string; quantity: number; price: number }>;
+    line_items: Array<{
+      description: string;
+      quantity: number;
+      unit_price?: number;
+      total?: number;
+      price?: number;
+    }>;
     payment_method: string;
   };
   job_suggestions: Array<{
@@ -180,7 +186,7 @@ export default function DemoResultPage() {
                       <p className="font-medium text-gray-900">{item.description}</p>
                       <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                     </div>
-                    <p className="font-semibold text-gray-900">${item.price.toFixed(2)}</p>
+                    <p className="font-semibold text-gray-900">${(item.total || item.price || 0).toFixed(2)}</p>
                   </div>
                 ))}
               </div>
