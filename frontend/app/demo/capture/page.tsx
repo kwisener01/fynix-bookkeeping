@@ -37,6 +37,8 @@ export default function DemoCapturePage() {
 
   const handleSuccess = (response: ReceiptUploadResponse) => {
     console.log('Receipt uploaded successfully:', response);
+    // Store result in localStorage for result page
+    localStorage.setItem('lastReceiptResult', JSON.stringify(response));
     router.push(`/demo/result?id=${response.receipt_id}`);
   };
 

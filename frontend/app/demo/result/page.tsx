@@ -47,47 +47,32 @@ export default function DemoResultPage() {
       return;
     }
 
-    // Simulate loading and display mock result
-    // In production, this would fetch the actual result
-    setTimeout(() => {
-      setResult({
-        receipt_id: receiptId,
-        extracted: {
-          vendor: 'The Home Depot',
-          date: new Date().toISOString().split('T')[0],
-          total: 245.67,
-          tax: 19.65,
-          confidence: 0.92,
-          line_items: [
-            { description: '2x4 Lumber 8ft', quantity: 10, price: 5.67 },
-            { description: 'Drywall Screws 3"', quantity: 2, price: 12.99 },
-            { description: 'Paint Primer Gallon', quantity: 3, price: 24.99 },
-          ],
-          payment_method: 'credit',
-        },
-        job_suggestions: [
-          {
-            job_id: 'job_001',
-            job_number: 'JOB2024-001',
-            job_name: 'Smith Residence Renovation',
-            confidence: 0.85,
-            reasons: [
-              'Purchase date within job timeline',
-              'Vendor matches trade type (General)',
-              'Amount consistent with job budget',
-            ],
+    // Load actual result from localStorage
+    try {
+      const storedResult = localStorage.getItem('lastReceiptResult');
+      if (storedResult) {
+        const apiResponse = JSON.parse(storedResult);
+
+        // Transform API response to match ResultData interface
+        setResult({
+          receipt_id: apiResponse.receipt_id,
+          extracted: {
+            vendor: apiResponse.extracted.vendor,
+            date: apiResponse.extracted.date,
+            total: apiResponse.extracted.total,
+            tax: apiResponse.extracted.tax || 0,
+            confidence: apiResponse.extracted.confidence,
+            line_items: apiResponse.extracted.line_items || [],
+            payment_method: apiResponse.extracted.payment_method || 'Unknown',
           },
-          {
-            job_id: 'job_002',
-            job_number: 'JOB2024-002',
-            job_name: 'Johnson Property Repair',
-            confidence: 0.62,
-            reasons: ['Date proximity to job start', 'Similar material keywords'],
-          },
-        ],
-      });
+          job_suggestions: apiResponse.job_suggestions || [],
+        });
+      }
+    } catch (error) {
+      console.error('Error loading receipt result:', error);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   }, [receiptId, demoUser, router]);
 
   if (loading) {
