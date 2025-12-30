@@ -53,20 +53,29 @@ export default function DemoResultPage() {
       if (storedResult) {
         const apiResponse = JSON.parse(storedResult);
 
-        // Transform API response to match ResultData interface
-        setResult({
-          receipt_id: apiResponse.receipt_id,
-          extracted: {
-            vendor: apiResponse.extracted.vendor,
-            date: apiResponse.extracted.date,
-            total: apiResponse.extracted.total,
-            tax: apiResponse.extracted.tax || 0,
-            confidence: apiResponse.extracted.confidence,
-            line_items: apiResponse.extracted.line_items || [],
-            payment_method: apiResponse.extracted.payment_method || 'Unknown',
-          },
-          job_suggestions: apiResponse.job_suggestions || [],
-        });
+        // Only use if receipt ID matches (to prevent showing old cached data)
+        if (apiResponse.receipt_id === receiptId) {
+          // Transform API response to match ResultData interface
+          setResult({
+            receipt_id: apiResponse.receipt_id,
+            extracted: {
+              vendor: apiResponse.extracted.vendor,
+              date: apiResponse.extracted.date,
+              total: apiResponse.extracted.total,
+              tax: apiResponse.extracted.tax || 0,
+              confidence: apiResponse.extracted.confidence,
+              line_items: apiResponse.extracted.line_items || [],
+              payment_method: apiResponse.extracted.payment_method || 'Unknown',
+            },
+            job_suggestions: apiResponse.job_suggestions || [],
+          });
+
+          // Clear after loading to prevent stale data
+          localStorage.removeItem('lastReceiptResult');
+        } else {
+          console.warn('Receipt ID mismatch - clearing stale data');
+          localStorage.removeItem('lastReceiptResult');
+        }
       }
     } catch (error) {
       console.error('Error loading receipt result:', error);
